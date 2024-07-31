@@ -25,6 +25,10 @@ app.use(morgan("dev"));
 
 // --------------------------------------------------------->
 
+app.get("/", (req, res) => {
+  res.send("working!!!");
+});
+
 app.post("/register", Register);
 app.post("/login", Login);
 app.post("/get-your-tasks", getYourTasks);
