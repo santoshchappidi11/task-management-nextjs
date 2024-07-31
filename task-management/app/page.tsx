@@ -1,14 +1,19 @@
-'use client'
+
+'use client';
 import { useRouter } from 'next/navigation';
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to the login page
     router.push('/login');
   }, [router]);
 
-  return null; // or you can return a loading spinner, etc.
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <p className='text-2xl'>Loading...</p>
+    </div>
+  );
 }
+
