@@ -125,6 +125,11 @@ const Dashboard = () => {
     const handleChangeValues = (e:any) => {
         setTaskData({...taskData, [e.target.name]:e.target.value})
     }
+    
+    
+    const handleStatusValue = (e:any) => {
+        setStatusTitle(e.target.value);
+    }
 
     const handleAddTaskSubmit = async(e:FormEvent) => {
         e.preventDefault()
@@ -137,7 +142,7 @@ const Dashboard = () => {
                 status:`${statusTitle && statusTitle}`
             }
 
-            const newData = statusTitle ? newTaskData : taskData
+            const newData = statusTitle ? newTaskData : taskData 
            
             console.log(newData, "task data")
 
@@ -289,7 +294,7 @@ const Dashboard = () => {
                                     <FontAwesomeIcon icon={faSpinner} size='lg'  className='mr-10'/>
                                     <label>Status</label>
                                 </div>
-                                <select className='h-full w-3/5 outline-none pl-2 rounded-md' defaultValue={statusTitle} name='status' onChange={handleChangeValues} value={taskData.status} >
+                                <select className='h-full w-3/5 outline-none pl-2 rounded-md' defaultValue={statusTitle} name='status' onChange={handleChangeValues} onClick={handleStatusValue} value={taskData.status} >
                                     {statusTitle && <option value={statusTitle}>{statusTitle}</option>}
                                     {!statusTitle && <option value="" disabled>Not selected</option>}
                                     {statusTitle != 'To do' && <option value="To do">To do</option>}
