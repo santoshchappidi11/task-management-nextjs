@@ -7,22 +7,15 @@ import DndContext from '../DragAndDrop/DragAndDropContext'
 // import DraggableItem from '../DragAndDrop/DraggableItem'
 // import DroppableArea from '../DragAndDrop/DroppableArea'
 
-// interface Item {
-//   id: number;
-//   content: string;
-// }
+interface Item {
+  id: number;
+  content: string;
+}
 
-// interface Column {
-//     id: string;
-//     items: Item[];
-//   }
-  
-//   const initialColumns: Column[] = [
-//     { id: 'column1', items: [{ id: 1, content: 'Item 1' }, { id: 2, content: 'Item 2' }] },
-//     { id: 'column2', items: [{ id: 3, content: 'Item 3' }] },
-//     { id: 'column3', items: [{ id: 4, content: 'Item 4' }] },
-//     { id: 'column4', items: [{ id: 5, content: 'Item 5' }, { id: 6, content: 'Item 6' }] },
-//   ];
+interface Column {
+    id: string;
+    items: Item[];
+  }
   
 
 interface Task {
@@ -43,6 +36,14 @@ interface Task {
   
 
   const AllUserTasks: React.FC<AllTasksProps> = ({ handleOpenModal, allTasks, editTask, deleteTask }) => {
+
+//   const initialColumns: Column[] = [
+//     { id: 'column1', items: [{ id: 1, content: 'Item 1' }, { id: 2, content: 'Item 2' }] },
+//     { id: 'column2', items: [{ id: 3, content: 'Item 3' }] },
+//     { id: 'column3', items: [{ id: 4, content: 'Item 4' }] },
+//     { id: 'column4', items: [{ id: 5, content: 'Item 5' }, { id: 6, content: 'Item 6' }] },
+//   ];
+  
 
 //   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
