@@ -8,8 +8,16 @@ import DndContext from '../DragAndDrop/DragAndDropContext'
 // import DroppableArea from '../DragAndDrop/DroppableArea'
 
 interface Item {
-  id: number;
-  content: string;
+//   id: number;
+//   content: string;
+
+_id: string;
+userId:string;
+title: string;
+description?: string;
+priority?: 'Low' | 'Medium' | 'Urgent';
+date: string;
+status: 'To do' | 'In progress' | 'Under review' | 'Finished';
 }
 
 interface Column {
@@ -20,6 +28,7 @@ interface Column {
 
 interface Task {
     _id: string;
+    userId:string;
     title: string;
     description?: string;
     priority?: 'Low' | 'Medium' | 'Urgent';
@@ -37,19 +46,38 @@ interface Task {
 
   const AllUserTasks: React.FC<AllTasksProps> = ({ handleOpenModal, allTasks, editTask, deleteTask }) => {
 
+    const [todoTasks, setTodoTasks] = useState<Task[]>([]);
+    const [inProgressTasks, setInProgressTasks] = useState<Task[]>([]);
+    const [underReviewTasks, setUnderReviewTasks] = useState<Task[]>([]);
+    const [finishedTasks, setFinishedTasks] = useState<Task[]>([]);
+
+    // console.log(allTasks, 'tasks')
+    // console.log(todoTasks, 'tasks here')
+
+
 //   const initialColumns: Column[] = [
 //     { id: 'column1', items: [{ id: 1, content: 'Item 1' }, { id: 2, content: 'Item 2' }] },
 //     { id: 'column2', items: [{ id: 3, content: 'Item 3' }] },
 //     { id: 'column3', items: [{ id: 4, content: 'Item 4' }] },
 //     { id: 'column4', items: [{ id: 5, content: 'Item 5' }, { id: 6, content: 'Item 6' }] },
 //   ];
+
+
+// const initialColumns: Column[] = [
+//     { id: 'column1', items: todoTasks?.length > 0 ? todoTasks : [] },
+//     { id: 'column2', items: inProgressTasks?.length > 0 ? inProgressTasks : [] },
+//     { id: 'column3', items: underReviewTasks?.length > 0 ? underReviewTasks : [] },
+//     { id: 'column4', items: finishedTasks?.length > 0 ? finishedTasks : [] },
+// ]
   
 
 //   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
+//   console.log(columns,"columns")
+
 //   const handleDrop = (item: { id: string | number }, targetColumnId: string) => {
 //     // Find the source column and target column
-//     const sourceColumnIndex = columns.findIndex(column => column.items.some(i => i.id === item.id));
+//     const sourceColumnIndex = columns.findIndex(column => column.items.some(i => i._id === item.id));
 //     const targetColumnIndex = columns.findIndex(column => column.id === targetColumnId);
 
 //     if (sourceColumnIndex === -1 || targetColumnIndex === -1) return; // Invalid column index
@@ -58,11 +86,11 @@ interface Task {
 //     if (sourceColumnIndex === targetColumnIndex) return; // No need to update if it's the same column
 
 //     // Find the item to move
-//     const itemToMove = columns[sourceColumnIndex].items.find(i => i.id === item.id);
+//     const itemToMove = columns[sourceColumnIndex].items.find(i => i._id === item.id);
 //     if (!itemToMove) return;
 
 //     // Update source and target columns
-//     const updatedSourceColumnItems = columns[sourceColumnIndex].items.filter(i => i.id !== item.id);
+//     const updatedSourceColumnItems = columns[sourceColumnIndex].items.filter(i => i._id !== item.id);
 //     const updatedTargetColumnItems = [...columns[targetColumnIndex].items, itemToMove];
 
 //     // Update columns state
@@ -78,11 +106,6 @@ interface Task {
 //     setColumns(updatedColumns);
 //   };
     
-
-    const [todoTasks, setTodoTasks] = useState<Task[]>([]);
-    const [inProgressTasks, setInProgressTasks] = useState<Task[]>([]);
-    const [underReviewTasks, setUnderReviewTasks] = useState<Task[]>([]);
-    const [finishedTasks, setFinishedTasks] = useState<Task[]>([]);
 
     useEffect(() => {
         if (allTasks) {
@@ -252,6 +275,49 @@ interface Task {
                 </DroppableArea>
                 ))}
           </div> */}
+
+          {/* <div style={{ display: 'flex', gap: '10px' }}>
+                {columns?.map((column) => (
+
+               <DroppableArea key={column.id} onDrop={(item) => handleDrop(item, column.id)}>
+                     <div className='w-72 '>
+                        <div className='flex items-center justify-between py-2'>
+                            <h1>Finished</h1>
+                            <FontAwesomeIcon icon={faArrowUpShortWide} size='lg'/>
+                        </div>
+
+                        {column?.items?.map((item) => (
+                            <DraggableItem key={item?._id} id={item?._id}>
+                                 <>
+                                    <div className='px-2 border mt-2 mb-4 rounded-md py-2 bg-gray-100' key={item?._id}>
+                                    <h1 className='text-lg font-medium'>{item?.title}</h1>
+                                    {item?.description && <p className='text-xs'>{item?.description}</p>}
+                                    {item?.priority && <p className={`mt-2 mb-1 text-xs text-white w-14 h-6 flex justify-center items-center rounded-md ${item?.priority == 'Low' && 'bg-green-500' || item?.priority == 'Medium' && 'bg-orange-500' || item?.priority == 'Urgent' && 'bg-red-600'}`}>{item?.priority}</p>}
+                                    <div className=' my-2'>
+                                        <FontAwesomeIcon icon={faClock} className='mr-2' />
+                                        <span className='text-xs font-semibold'>{new Date(item?.date).toISOString().split('T')[0]}</span>
+                                    </div>
+                                    <div className='flex justify-between items-center'>
+                                            <p className='text-xs my-2'><TimeAgo timestamp={item?.date} /></p>
+                                        <div className='w-1/6 flex justify-between items-center'>
+                                            <FontAwesomeIcon icon={faPenToSquare} className='cursor-pointer' onClick={() => editTask(item?._id)}/>
+                                            <FontAwesomeIcon icon={faTrashCan} className='cursor-pointer' onClick={() => deleteTask(item?._id)}/>
+                                        </div>
+                                    </div>
+                                    </div>
+                                  </>
+                            </DraggableItem>
+                        ))}
+
+                        <div onClick={(e) => handleOpenModal(e)} className='flex justify-between items-center px-2 py-2 border  rounded-md cursor-pointer bg-black text-white' >
+                            <p className='text-sm '>Add new</p>
+                            <FontAwesomeIcon icon={faPlus} />
+                        </div>
+                     </div>
+               </DroppableArea>
+                ))}
+          </div> */}
+
         </div>
     </DndContext>
 
