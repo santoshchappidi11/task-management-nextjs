@@ -24,7 +24,7 @@ const DroppableArea: React.FC<DroppableAreaProps> = ({ onDrop, children }) => {
   drop(ref);
 
   return (
-    <div ref={ref} style={{ backgroundColor: isOver ? 'lightgreen' : 'white', padding: '20px', border: '1px solid black' }}>
+    <div ref={ref} className={`${ isOver ? 'bg-gray-100 rounded-lg': 'bg-white'}`}>
       {children}
     </div>
   );

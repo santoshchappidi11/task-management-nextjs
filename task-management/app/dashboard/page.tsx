@@ -59,6 +59,8 @@ const Dashboard = () => {
     })
     const [allTasks, setAllTasks] = useState([])
 
+    // console.log(statusTitle, 'status title')
+
 
     const handleOpenModal = (e:any) => {
         const parentElement = e.currentTarget.closest('.w-72');
