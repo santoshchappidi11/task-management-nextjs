@@ -2,6 +2,7 @@
 
 import api from "@/config";
 import { createContext, ReactNode, useContext, useEffect, useReducer } from "react";
+import toast from "react-hot-toast";
 
 interface User {
     id: string;
@@ -55,7 +56,7 @@ export const MyContextProvider = ({children}:{children:ReactNode}) => {
     const Logout = () => {
 
         localStorage.removeItem("Token")
-        alert("Logout successfull!")
+        toast.success("Logout successfull!")
         dispatch({
             type:"LOGOUT"
         })
@@ -76,10 +77,10 @@ export const MyContextProvider = ({children}:{children:ReactNode}) => {
                   payload: response.data.user,
                 });
               } else {
-                alert(response.data.message);
+                toast.error(response.data.message);
               }
             } catch (error:any) {
-              alert(error.response.data.message);
+              toast.error(error.response.data.message);
             }
           } else {
             console.log("No token found in local storage.");

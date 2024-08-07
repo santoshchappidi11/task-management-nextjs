@@ -5,6 +5,7 @@ import Link from 'next/link'
 import React, { FormEvent, useState } from 'react'
 import { useMyContext } from '../context/MyContext'
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 const Login = () => {
 
@@ -51,20 +52,20 @@ const Login = () => {
             // Pass the User object to the Login function
             Login(response.data.user);
             setUserData({ email: "", password: "" });
-            alert(response.data.message);
+            toast.success(response.data.message);
             router.push("/dashboard")
           } else {
             console.error('User data is missing in the response.');
-            alert('Login was successful, but user data is missing.');
+            toast.error('Login was successful, but user data is missing.');
           }
         }else{
-          alert(response.data.message)
+          toast.error(response.data.message)
         }
       } catch (error:any) {
-        alert(error.response.data.message)
+        toast.error(error.response.data.message)
       }
     }else{
-      alert('Please fill all the details!')
+      toast.error('Please fill all the details!')
     }
   }
 

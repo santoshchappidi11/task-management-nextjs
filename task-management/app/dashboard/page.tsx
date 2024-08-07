@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import LeftPanel from './LeftPanel'
 import TopPanel from './TopPanel'
 import AllUserTasks from './AllTasks'
+import toast from 'react-hot-toast'
 
 
 
@@ -114,10 +115,10 @@ const Dashboard = () => {
                     setTaskData(response?.data?.task);
                     setStatusTitle("")
               } else {
-                alert(response.data.message);
+                toast.error(response.data.message);
               }
             } catch (error:any) {
-              alert(error.response.data.message);
+              toast.error(error.response.data.message);
             }
           }
 
@@ -145,8 +146,6 @@ const Dashboard = () => {
             }
 
             const newData = statusTitle ? newTaskData : taskData 
-           
-            console.log(newData, "task data")
 
             if(token){
                 try {
@@ -161,20 +160,20 @@ const Dashboard = () => {
                             deadline:"",
                             description:"",
                         })
-                        alert(response?.data?.message)
+                        toast.success(response?.data?.message)
                         setAllTasks(response.data.tasks)
                         setStatusTitle("")
                     }else{
-                        alert(response?.data?.message)
+                        toast.error(response?.data?.message)
                     }
                 } catch (error:any) {
-                    alert(error.response.data.message)
+                    toast.error(error.response.data.message)
                 }
             }
            
 
         }else{
-            alert("please fill the title and status fields!")
+            toast.error("please fill the title and status fields!")
         }
     }
 
@@ -206,13 +205,13 @@ const Dashboard = () => {
                         description:"",
                     })
                 setAllTasks(response.data.tasks);
-                alert(response.data.message);
+                toast.success(response.data.message);
                 setStatusTitle("")
                 } else {
-                alert(response.data.message);
+                toast.error(response.data.message);
                 }
             } catch (error:any) {
-                alert(error.response.data.message);
+                toast.error(error.response.data.message);
             }
         }
     }
@@ -226,14 +225,13 @@ const Dashboard = () => {
             const parsedToken = JSON.parse(token);
             const response = await api.post("/delete-task", { token:parsedToken, taskId });
             if (response?.data?.success) {
-                console.log(response.data.tasks, 'deleted')
-                alert(response?.data?.message)
+                toast.success(response?.data?.message)
                 setAllTasks(response.data.tasks)
             } else {
-              alert(response.data.message);
+              toast.error(response.data.message);
             }
           } catch (error:any) {
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
           }
         }
       };
@@ -251,7 +249,7 @@ const Dashboard = () => {
               if (response.data.success) {
                 setAllTasks(response?.data?.tasks);
               } else {
-                alert(response.data.message);
+                toast.error(response.data.message);
               }
             } catch (error:any) {
               console.log(error.response.data.message);

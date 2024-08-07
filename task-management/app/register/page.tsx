@@ -4,6 +4,7 @@ import api from '@/config'
 import Link from 'next/link'
 import React, { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 const Register = () => {
 
@@ -45,15 +46,15 @@ const Register = () => {
                         password:""
                     })
                     router.push("/login")
-                    alert(response.data.message)
+                    toast.success(response.data.message)
                 }else{
-                    alert(response.data.message)
+                    toast.error(response.data.message)
                 }  
             } catch (error:any) {
-                alert(error.response.data.message)
+                toast.error(error.response.data.message)
             }
         }else{
-            alert("Please fill all the details!")
+            toast.error("Please fill all the details!")
         }
     }
 

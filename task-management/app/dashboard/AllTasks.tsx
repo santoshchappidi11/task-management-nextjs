@@ -7,6 +7,7 @@ import DndContext from '../DragAndDrop/DragAndDropContext'
 import DraggableItem from '../DragAndDrop/DraggableItem'
 import DroppableArea from '../DragAndDrop/DroppableArea'
 import api from '@/config'
+import toast from 'react-hot-toast'
 
 interface Item {
 _id: string;
@@ -96,12 +97,12 @@ interface Task {
 
               if (response.data.success) {
               setHandleAllTasks(response.data.tasks);
-              alert(response.data.message);
+              toast.success(response.data.message);
               } else {
-              alert(response.data.message);
+              toast.error(response.data.message);
               }
           } catch (error:any) {
-              alert(error.response.data.message);
+              toast.error(error.response.data.message);
           }
       }
   }
