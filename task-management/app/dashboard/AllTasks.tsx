@@ -6,6 +6,7 @@ import TimeAgo from './TimeAgo'
 import DndContext from '../DragAndDrop/DragAndDropContext'
 import DraggableItem from '../DragAndDrop/DraggableItem'
 import DroppableArea from '../DragAndDrop/DroppableArea'
+import api from '@/config'
 
 interface Item {
 _id: string;
@@ -48,16 +49,24 @@ interface Task {
     const [underReviewTasks, setUnderReviewTasks] = useState<Task[]>([]);
     const [finishedTasks, setFinishedTasks] = useState<Task[]>([]);
     const [columns, setColumns] = useState<Column[]>();
+    const [handleAllTasks, setHandleAllTasks] = useState<Task[]>([])
+
+
+    useEffect(() => {
+      if(allTasks){
+        setHandleAllTasks(allTasks)
+      }
+    },[allTasks])
     
     useEffect(() => {
-        if (allTasks) {
-          setTodoTasks(allTasks.filter((task: Task) => task.status === 'To do'));
-          setInProgressTasks(allTasks.filter((task: Task) => task.status === 'In progress'));
-          setUnderReviewTasks(allTasks.filter((task: Task) => task.status === 'Under review'));
-          setFinishedTasks(allTasks.filter((task: Task) => task.status === 'Finished'));
+        if (handleAllTasks) {
+          setTodoTasks(handleAllTasks.filter((task: Task) => task.status === 'To do'));
+          setInProgressTasks(handleAllTasks.filter((task: Task) => task.status === 'In progress'));
+          setUnderReviewTasks(handleAllTasks.filter((task: Task) => task.status === 'Under review'));
+          setFinishedTasks(handleAllTasks.filter((task: Task) => task.status === 'Finished'));
         }
 
-      }, [allTasks])
+      }, [handleAllTasks])
 
 
       useEffect(() => {
@@ -71,10 +80,33 @@ interface Task {
       }, [todoTasks, inProgressTasks, underReviewTasks, finishedTasks]);
 
 
-  const handleDrop = (item: { id: string | number }, targetColumnId: string, title:string) => {
+  const handleDrop = (item: { id: string | number }, targetColumnId: string, title:string, column:any) => {
 
-    console.log(item.id, "item id")
-    console.log(title, 'drop item')
+    const handleUpdateTask = async() => {
+      const token = localStorage.getItem("Token");
+
+      if (token) {
+          try {
+              const parsedToken = JSON.parse(token);
+              const response = await api.post("/update-task", {
+              taskId:item.id,
+              token:parsedToken,
+              taskData:{status:title},
+              });
+
+              if (response.data.success) {
+              setHandleAllTasks(response.data.tasks);
+              alert(response.data.message);
+              } else {
+              alert(response.data.message);
+              }
+          } catch (error:any) {
+              alert(error.response.data.message);
+          }
+      }
+  }
+
+  handleUpdateTask()
 
     if (!columns) return; // Ensure columns is defined
 
@@ -118,7 +150,7 @@ interface Task {
           <div className='w-full h-4/5 flex justify-between items-start py-5 px-5 bg-white'>
                 {columns?.map((column) => (
 
-               <DroppableArea key={column.id} onDrop={(item) => handleDrop(item, column.id, column.title)}>
+               <DroppableArea key={column.id} onDrop={(item) => handleDrop(item, column.id, column.title, column)}>
                      <div className='w-72 borde px-2 rounded-lg'>
                         <div className='flex items-center justify-between py-2'>
                             <h1>{column.title}</h1>

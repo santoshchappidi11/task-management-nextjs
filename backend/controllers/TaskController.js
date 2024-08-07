@@ -115,10 +115,10 @@ export const updateTask = async (req, res) => {
 
     const { token, taskId } = req.body;
 
-    if (!title || !status)
-      return res
-        .status(404)
-        .json({ success: false, message: "Title and status are required!" });
+    // if (!title || !status)
+    //   return res
+    //     .status(404)
+    //     .json({ success: false, message: "Title and status are required!" });
 
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
