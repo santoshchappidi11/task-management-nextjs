@@ -20,8 +20,9 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ id, children }) => {
 
   drag(ref);
 
+
   return (
-    <div ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
+    <div ref={ref} style={{opacity: isDragging ? 0.8 : 1}}>
       {children}
     </div>
   );

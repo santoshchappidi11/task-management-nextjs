@@ -158,11 +158,11 @@ interface Task {
                             <FontAwesomeIcon icon={faArrowUpShortWide} size='lg'/>
                         </div>
 
-                        <div className='overflow-y-auto max-h-96 min-h-auto '>
+                        <div className="overflow-y-auto max-h-96 min-h-auto scrollbar-thin scrollbar-thumb-gray-900 scrollbar-track-gray-100">
                             {column.items.length > 0 ?   column?.items?.map((item) => (
                                 <DraggableItem key={item?._id} id={item?._id}>
                                     <>
-                                        <div className='px-2 mt-2 mb-4 rounded-md py-2 bg-gray-100 cursor-grab' key={item?._id}>
+                                        <div className='px-2 mt-2 mb-4 rounded-md py-2 bg-gray-100 cursor-grab opacity-1' key={item?._id}>
                                         <h1 className='text-lg font-medium'>{item?.title}</h1>
                                         {item?.description && <p className='text-xs'>{item?.description}</p>}
                                         {item?.priority && <p className={`mt-2 mb-1 text-xs text-white w-14 h-6 flex justify-center items-center rounded-md ${item?.priority == 'Low' && 'bg-green-500' || item?.priority == 'Medium' && 'bg-orange-500' || item?.priority == 'Urgent' && 'bg-red-600'}`}>{item?.priority}</p>}
