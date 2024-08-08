@@ -158,7 +158,7 @@ interface Task {
                             <FontAwesomeIcon icon={faArrowUpShortWide} size='lg'/>
                         </div>
 
-                        <div>
+                        <div className='overflow-y-auto max-h-96 min-h-auto '>
                             {column.items.length > 0 ?   column?.items?.map((item) => (
                                 <DraggableItem key={item?._id} id={item?._id}>
                                     <>
