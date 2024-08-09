@@ -24,16 +24,31 @@ const Dashboard = () => {
     const router = useRouter()
     const { Logout} = useMyContext()
 
+     // function to reset task data
+     const resetTaskData = () => {
+        setTaskData({
+            _id: "",
+            title: "",
+            status: "",
+            priority: "",
+            deadline: "",
+            description: "",
+        });
+        setStatusTitle("");
+        setIsEditTask(false);
+        setIsModalOpen(false);
+        setIsCloseModal(true);
+    };
+    
+    // function to close the task modal
+    const closeTaskModal = () => {
+        resetTaskData();
+    };
+    
 
     const handleLogout = () => {
         Logout()
         router.push("/login")
-    }
-
-    interface currentUser {
-        name:string;
-        email:string;
-        userId:string;
     }
 
     interface taskData  {
@@ -60,7 +75,15 @@ const Dashboard = () => {
     })
     const [allTasks, setAllTasks] = useState([])
 
-    // console.log(statusTitle, 'status title')
+    const handleChangeValues = (e:any) => {
+        setTaskData({...taskData, [e.target.name]:e.target.value})
+    } 
+    
+    const handleStatusValue = (e:any) => {
+        setStatusTitle(e.target.value);
+    }
+
+    // console.log(allTasks,'all tasks')
 
 
     const handleOpenModal = (e:any) => {
@@ -91,175 +114,130 @@ const Dashboard = () => {
         setStatusTitle("")
     }
 
-    const editTask = async(taskId:string) => {
-
+  
+    const editTask = async (taskId: string) => {
         const token = localStorage.getItem("Token");
-      
-          if (token) {
+    
+        if (token) {
             try {
-            const parsedToken = JSON.parse(token);
-              const response = await api.post("/get-edit-task", { token:parsedToken, taskId });
-      
-              if (response.data.success) {
-                    setTaskData({
-                        _id:"",
-                        title:"",
-                        status:"",
-                        priority:"",
-                        deadline:"",
-                        description:"",
-                    })
-                    setIsEditTask(true)
-                    setIsModalOpen(true)
-                    setIsCloseModal(false)
-                    setTaskData(response?.data?.task);
-                    setStatusTitle("")
-              } else {
-                toast.error(response.data.message);
-              }
-            } catch (error:any) {
-              toast.error(error.response.data.message);
-            }
-          }
-
-    }
-
-
-    const handleChangeValues = (e:any) => {
-        setTaskData({...taskData, [e.target.name]:e.target.value})
-    }
+                const parsedToken = JSON.parse(token);
+                const response = await api.post("/get-edit-task", { token: parsedToken, taskId });
     
-    
-    const handleStatusValue = (e:any) => {
-        setStatusTitle(e.target.value);
-    }
-
-    const handleAddTaskSubmit = async(e:FormEvent) => {
-        e.preventDefault()
-
-        const token = localStorage.getItem("Token");
-        
-        if(taskData?.title){
-            const newTaskData = {
-                ...taskData,
-                status:`${statusTitle && statusTitle}`
-            }
-
-            const newData = statusTitle ? newTaskData : taskData 
-
-            if(token){
-                try {
-                    const parsedToken = JSON.parse(token);
-                    const response = await api.post('/add-task', {taskData:newData, token:parsedToken})
-                    if(response?.data?.success){
-                        setTaskData({
-                            _id:"",
-                            title:"",
-                            status:"",
-                            priority:"",
-                            deadline:"",
-                            description:"",
-                        })
-                        toast.success(response?.data?.message)
-                        setAllTasks(response.data.tasks)
-                        setStatusTitle("")
-                    }else{
-                        toast.error(response?.data?.message)
-                    }
-                } catch (error:any) {
-                    toast.error(error.response.data.message)
+                if (response.data.success) {
+                    const task = response?.data?.task || {};
+                    setTaskData(task);
+                    setIsEditTask(true);
+                    setIsModalOpen(true);
+                    setIsCloseModal(false);
+                    setStatusTitle("");
+                } else {
+                    toast.error(response.data.message);
                 }
+            } catch (error: any) {
+                toast.error(error.response?.data?.message || "An error occurred.");
             }
-           
-
-        }else{
-            toast.error("please fill the title and status fields!")
         }
-    }
-
-
-    const handleUpdateTask = async(e:FormEvent, taskId:string) => {
+    };
+    
+    const handleAddTaskSubmit = async (e: FormEvent) => {
         e.preventDefault();
-
+    
+        if (!taskData?.title) {
+            toast.error("Please fill the title and status fields!");
+            return;
+        }
+    
         const token = localStorage.getItem("Token");
-
+    
+        if (token) {
+            try {
+                const parsedToken = JSON.parse(token);
+                const newTaskData = { ...taskData, status: statusTitle || taskData.status };
+                const response = await api.post('/add-task', { taskData: newTaskData, token: parsedToken });
+    
+                if (response?.data?.success) {
+                    resetTaskData();
+                    toast.success(response?.data?.message);
+                    setAllTasks(response.data.tasks);
+                } else {
+                    toast.error(response?.data?.message);
+                }
+            } catch (error: any) {
+                toast.error(error.response?.data?.message || "An error occurred.");
+            }
+        }
+    };
+    
+    const handleUpdateTask = async (e: FormEvent, taskId: string) => {
+        e.preventDefault();
+    
+        const token = localStorage.getItem("Token");
+    
         if (token) {
             try {
                 const parsedToken = JSON.parse(token);
                 const response = await api.post("/update-task", {
-                taskId,
-                token:parsedToken,
-                taskData,
+                    taskId,
+                    token: parsedToken,
+                    taskData,
                 });
-
+    
                 if (response.data.success) {
-                    setIsModalOpen(false)
-                    setIsCloseModal(true)
-                    setIsEditTask(false)
-                    setTaskData({
-                        _id:"",
-                        title:"",
-                        status:"",
-                        priority:"",
-                        deadline:"",
-                        description:"",
-                    })
-                setAllTasks(response.data.tasks);
-                toast.success(response.data.message);
-                setStatusTitle("")
+                    closeTaskModal();
+                    setAllTasks(response.data.tasks);
+                    toast.success(response.data.message);
                 } else {
-                toast.error(response.data.message);
+                    toast.error(response.data.message);
                 }
-            } catch (error:any) {
-                toast.error(error.response.data.message);
+            } catch (error: any) {
+                toast.error(error.response?.data?.message || "An error occurred.");
             }
         }
-    }
-
-
-    const deleteTask = async (taskId:string) => {
+    };
+    
+    const deleteTask = async (taskId: string) => {
         const token = localStorage.getItem("Token");
     
         if (token) {
-          try {
-            const parsedToken = JSON.parse(token);
-            const response = await api.post("/delete-task", { token:parsedToken, taskId });
-            if (response?.data?.success) {
-                toast.success(response?.data?.message)
-                setAllTasks(response.data.tasks)
-            } else {
-              toast.error(response.data.message);
-            }
-          } catch (error:any) {
-            toast.error(error.response.data.message);
-          }
-        }
-      };
-
-    useEffect(() => {
-        const getYourTasks = async () => {
-          const token = localStorage.getItem("Token")
-    
-          if (token) {
             try {
                 const parsedToken = JSON.parse(token);
-              const response = await api.post("/get-your-tasks", {
-                token:parsedToken
-              });
-              if (response.data.success) {
-                setAllTasks(response?.data?.tasks);
-              } else {
-                toast.error(response.data.message);
-              }
-            } catch (error:any) {
-              console.log(error.response.data.message);
+                const response = await api.post("/delete-task", { token: parsedToken, taskId });
+    
+                if (response?.data?.success) {
+                    toast.success(response?.data?.message);
+                    setAllTasks(response.data.tasks);
+                } else {
+                    toast.error(response.data.message);
+                }
+            } catch (error: any) {
+                toast.error(error.response?.data?.message || "An error occurred.");
             }
-          }
+        }
+    };
+    
+     useEffect(() => {
+        const getYourTasks = async () => {
+            const token = localStorage.getItem("Token");
+    
+            if (!token) return;
+    
+            try {
+                const parsedToken = JSON.parse(token);
+                const response = await api.post("/get-your-tasks", { token: parsedToken });
+    
+                if (response.data.success) {
+                    setAllTasks(response.data.tasks);
+                } else {
+                    toast.error(response.data.message);
+                }
+            } catch (error: any) {
+                toast.error(error.response?.data?.message || "Failed to fetch tasks.");
+            }
         };
     
         getYourTasks();
-      }, []);
-
+    }, []);
+    
 
   return (
     <div>
@@ -329,13 +307,9 @@ const Dashboard = () => {
                                </div>
                                 <input type='text' name='description' placeholder='Your Description' onChange={handleChangeValues} value={taskData.description} className='h-full w-3/5 outline-none pl-2 rounded-md' />
                             </div>
-                            {!isEditTask && <button onClick={handleAddTaskSubmit} className='text-xl w-full h-12 rounded-md flex items-center justify-center cursor-pointer bg-violet-600 text-white shadow my-2'>
-                                <FontAwesomeIcon icon={faPlus} size='sm' className='mx-2'/>
-                                Add Task
-                            </button>}
-                            {isEditTask && <button onClick={(e) => handleUpdateTask(e, taskData._id)} className='text-xl w-full h-12 rounded-md flex items-center justify-center cursor-pointer bg-violet-600 text-white shadow my-2'>
-                                <FontAwesomeIcon icon={faPenToSquare}  size='sm' className='mx-2'/>
-                                Update Task
+                            {<button onClick={ isEditTask ? (e) => handleUpdateTask(e, taskData._id) : handleAddTaskSubmit } className='text-xl w-full h-12 rounded-md flex items-center justify-center cursor-pointer bg-violet-600 text-white shadow my-2'>
+                                <FontAwesomeIcon icon={isEditTask ? faPenToSquare : faPlus} size='sm' className='mx-2'/>
+                                {isEditTask ? "Update Task" : "Add Task"}
                             </button>}
                         </div>
                     </form>

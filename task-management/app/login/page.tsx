@@ -72,17 +72,41 @@ const Login = () => {
 
   return (
     <div className='h-screen w-full flex items-center justify-center bg-gradient-to-b from-white to-violet-300'>
-        <div className='h-auto w-1/3 flex items-center justify-center flex-col py-14 shadow rounded-lg bg-white'>
-            <h1 className='text-3xl font-semibold'>Welcome to <span className='text-violet-600'>Workflo</span>!</h1>
-            <form onSubmit={handleLoginSubmit} className='w-4/5 flex items-center justify-center flex-col'>
-                <input type='text' name='email' placeholder='Your email' onChange={handleChangeValues} value={userData.email} className='h-10 w-11/12  rounded-md mt-10 mb-5 p-3 bg-slate-100'/>
-                <input type='password' name='password' placeholder='Password' onChange={handleChangeValues} value={userData.password} className='h-10 w-11/12  rounded-md mb-5 p-3 bg-slate-100' />
-                <button type='submit' className='h-10 w-11/12 rounded-md bg-violet-600 text-white shadow'>Login</button>
-               <p className='my-5'>Dont have an account? Create a <Link href="/register" className='text-violet-600'>new account.</Link></p> 
-            </form>
-        </div>
+      <div className='h-auto w-1/3 flex items-center justify-center flex-col py-14 shadow rounded-lg bg-white'>
+        <h1 className='text-3xl font-semibold'>
+          Welcome to <span className='text-violet-600'>Workflo</span>!
+        </h1>
+        <form onSubmit={handleLoginSubmit} className='w-4/5 flex flex-col items-center'>
+          <input
+            type='email'
+            name='email'
+            placeholder='Your email'
+            onChange={handleChangeValues}
+            value={userData.email}
+            className='h-10 w-full rounded-md mt-10 mb-5 p-3 bg-slate-100'
+          />
+          <input
+            type='password'
+            name='password'
+            placeholder='Password'
+            onChange={handleChangeValues}
+            value={userData.password}
+            className='h-10 w-full rounded-md mb-5 p-3 bg-slate-100'
+          />
+          <button
+            type='submit'
+            className='h-10 w-full rounded-md bg-violet-600 text-white shadow'
+          >
+            Login
+          </button>
+          <p className='my-5'>
+            Don&apos;t have an account? Create a <Link href="/register" className='text-violet-600'>new account.</Link>
+          </p>
+        </form>
+      </div>
     </div>
   )
+
 }
 
 export default Login

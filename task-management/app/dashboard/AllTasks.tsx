@@ -81,33 +81,34 @@ interface Task {
       }, [todoTasks, inProgressTasks, underReviewTasks, finishedTasks]);
 
 
-  const handleDrop = (item: { id: string | number }, targetColumnId: string, title:string, column:any) => {
+  const handleDrop = (item: { id: string | number }, targetColumnId: string, title:string) => {
 
-    const handleUpdateTask = async() => {
-      const token = localStorage.getItem("Token");
+  const handleUpdateTask = async () => {
+    const token = localStorage.getItem("Token");
 
-      if (token) {
-          try {
-              const parsedToken = JSON.parse(token);
-              const response = await api.post("/update-task", {
-              taskId:item.id,
-              token:parsedToken,
-              taskData:{status:title},
-              });
+    if (!token) return;
 
-              if (response.data.success) {
-              setHandleAllTasks(response.data.tasks);
-              toast.success(response.data.message);
-              } else {
-              toast.error(response.data.message);
-              }
-          } catch (error:any) {
-              toast.error(error.response.data.message);
-          }
-      }
-  }
+    try {
+        const parsedToken = JSON.parse(token);
+        const { data } = await api.post("/update-task", {
+            taskId: item.id,
+            token: parsedToken,
+            taskData: { status: title },
+        });
 
-  handleUpdateTask()
+        if (data.success) {
+            setHandleAllTasks(data.tasks);
+            toast.success(data.message);
+        } else {
+            toast.error(data.message);
+        }
+    } catch (error: any) {
+        toast.error(error?.response?.data?.message || "An error occurred");
+    }
+};
+
+handleUpdateTask();
+
 
     if (!columns) return; // Ensure columns is defined
 
@@ -151,7 +152,7 @@ interface Task {
           <div className='w-full h-4/5 flex justify-between items-start py-5 px-5 bg-white'>
                 {columns?.map((column) => (
 
-               <DroppableArea key={column.id} onDrop={(item) => handleDrop(item, column.id, column.title, column)}>
+               <DroppableArea key={column.id} onDrop={(item) => handleDrop(item, column.id, column.title)}>
                      <div className='w-72 borde px-2 rounded-lg'>
                         <div className='flex items-center justify-between py-2'>
                             <h1>{column.title}</h1>
