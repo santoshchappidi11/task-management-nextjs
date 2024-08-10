@@ -74,7 +74,7 @@ const Login = () => {
     <div className='h-screen w-full flex items-center justify-center bg-gradient-to-b from-white to-violet-300'>
       <div className='h-auto w-1/3 flex items-center justify-center flex-col py-14 shadow rounded-lg bg-white'>
         <h1 className='text-3xl font-semibold'>
-          Welcome to <span className='text-violet-600'>Workflo</span>!
+          Welcome to <span className='text-violet-600'>TM</span>!
         </h1>
         <form onSubmit={handleLoginSubmit} className='w-4/5 flex flex-col items-center'>
           <input
