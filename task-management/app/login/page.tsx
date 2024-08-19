@@ -55,7 +55,7 @@ const Login = () => {
             toast.success(response.data.message);
             router.push("/dashboard")
           } else {
-            console.error('User data is missing in the response.');
+            // console.error('User data is missing in the response.');
             toast.error('Login was successful, but user data is missing.');
           }
         }else{
